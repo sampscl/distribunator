@@ -13,8 +13,8 @@ defmodule Distribunator.Manager do
   # API
   ##############################
 
-  def start_link(:ok) do
-    GenServer.start_link(__MODULE__, :ok, [name: __MODULE__])
+  def start_link(absent_nodes \\ []) do
+    GenServer.start_link(__MODULE__, absent_nodes, [name: __MODULE__])
   end
 
   defmodule State do
