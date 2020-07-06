@@ -11,8 +11,8 @@ defmodule Distribunator.Distributed do
   - name The distributed name
 
   ## Returns
-  - {:ok, pid} Success
-  - {:error, reason} Failure and reason
+  - `{:ok, pid}` Success
+  - `{:error, reason}` Failure and reason
   """
   @spec pid_of(any()) :: {:ok, pid()} | {:error, any()}
   def pid_of(name) do
@@ -25,7 +25,7 @@ defmodule Distribunator.Distributed do
   @doc """
   Get the first pid of the current module
   ## Returns
-  - pid The first registered pid of the calling module
+  - `pid` The first registered pid of the calling module
   """
   @spec my_pid() :: pid()
   defmacro my_pid do
@@ -75,8 +75,8 @@ defmodule Distribunator.Distributed do
   - name The distributed name
 
   ## Returns
-  - {:ok, [pid()]} Success, even if pid list is empty
-  - {:error, reason} Failure and reason
+  - `{:ok, [pid()]}` Success, even if pid list is empty
+  - `{:error, reason}` Failure and reason
   """
   @spec all_pids_of(any()) :: {:ok, [pid()]} | {:error, any()}
   def all_pids_of(name) do
@@ -90,8 +90,8 @@ defmodule Distribunator.Distributed do
   Get all pids registered to the current module, easy shorthand
 
   ## Returns
-  - {:ok, [pid()]} Success, even if pid list is empty
-  - {:error, reason} Failure and reason
+  - `{:ok, [pid()]}` Success, even if pid list is empty
+  - `{:error, reason}` Failure and reason
   """
   @spec all_pids_of() :: {:ok, [pid()]} | {:error, any()}
   defmacro all_pids_of do
@@ -100,6 +100,7 @@ defmodule Distribunator.Distributed do
     end
   end
 
+  @spec all_nodes_of(atom()) :: {:ok, [atom()]} | {:error, any()}
   @doc """
   Get all node atoms sharing an instance of a distributed name
 
@@ -107,10 +108,9 @@ defmodule Distribunator.Distributed do
   - name The distributed name
 
   ## Returns
-  - {:ok, [atom()]} Success, even if atom list is emtpy
-  - {:error, reason} Failure and reason
+  - `{:ok, [node_atom]}` Success, even if atom list is emtpy
+  - `{:error, reason}` Failure and reason
   """
-  @spec all_nodes_of(atom()) :: {:ok, [atom()]} | {:error, any()}
   def all_nodes_of(name) do
     case all_pids_of(name) do
       {:error, reason} -> {:error, reason}
@@ -125,14 +125,10 @@ defmodule Distribunator.Distributed do
     end
   end
 
-  @doc """
-  Get all nodes having the current module registered
-
-  ## Returns
-  - {:ok, [atom()]} Success, even if atom list is emtpy
-  - {:error, reason} Failure and reason
-  """
   @spec all_nodes_of() :: {:ok, [atom()]} | {:error, any()}
+  @doc """
+  Get all nodes having the current module registered, see all_nodes_of/1
+  """
   defmacro all_nodes_of do
     quote do
       Distribunator.Distributed.all_nodes_of(__ENV__.module)
@@ -155,8 +151,8 @@ defmodule Distribunator.Distributed do
   returns but before the rpc call returns. Can be nil.
 
   ## Returns
-  - {:badrpc, reason} RPC failed, for reason
-  - {:error, "no node"} There were no nodes with name registered
+  - `{:badrpc, reason}` RPC failed, for reason
+  - `{:error, "no node"}` There were no nodes with name registered
   - any The result of `apply(mod, func, args)`
   """
   @spec do_node_rpc(atom(), atom(), atom(), list(), function()|nil) :: {:error, any()} | any()
@@ -181,8 +177,8 @@ defmodule Distribunator.Distributed do
   returns but before the rpc call returns. Can be nil.
 
   ## Returns
-  - {:badrpc, reason} RPC failed, for reason
-  - {:error, "no node"} There were no nodes with name registered
+  - `{:badrpc, reason}` RPC failed, for reason
+  - `{:error, "no node"}` There were no nodes with name registered
   - any The result of `apply(mod, func, args)`
   """
   @spec node_rpc(atom(), atom(), atom(), list(), function()|nil) :: {:error, any()} | any()
@@ -204,8 +200,8 @@ defmodule Distribunator.Distributed do
   returns but before the rpc call returns. Can be nil.
 
   ## Returns
-  - {:badrpc, reason} RPC failed, for reason
-  - {:error, "no node"} There were no nodes with name registered
+  - `{:badrpc, reason}` RPC failed, for reason
+  - `{:error, "no node"}` There were no nodes with name registered
   - any The result of `apply(mod, func, args)`
   """
   @spec node_rpc(atom(), atom(), list(), function()|nil) :: {:error, any()} | any()
@@ -222,7 +218,7 @@ defmodule Distribunator.Distributed do
   - name The distributed name
 
   ## Returns
-  - :ok
+  - `:ok`
   """
   @spec register(any()) :: :ok
   def register(name), do: register(name, self())
@@ -235,7 +231,7 @@ defmodule Distribunator.Distributed do
   - pid The pid
 
   ## Returns
-  - :ok
+  - `:ok`
   """
   @spec register(any(), pid()) :: :ok
   def register(name, pid) do
@@ -259,7 +255,7 @@ defmodule Distribunator.Distributed do
   Get the registry of names and pids
 
   ## Returns
-  - [{name, {:ok, [pid]}}, ...]
+  - `[{name, {:ok, [pid]}}, ...]`
   """
   def registry do
     :pg2.which_groups()
