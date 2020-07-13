@@ -4,7 +4,7 @@ defmodule Distribunator.MixProject do
   def project do
     [
       app: :distribunator,
-      version: "0.1.0",
+      version: "0.1.3",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -33,6 +33,8 @@ defmodule Distribunator.MixProject do
       description: "Utilities supporting process distribution across nodes and node connections",
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/sampscl/distribunator"},
+      homepage_url: "https://github.com/sampscl/distribunator",
+      source_url:  "https://github.com/sampscl/distribunator/tree/v0.1.3",
     ]
   end
 end

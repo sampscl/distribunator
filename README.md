@@ -10,7 +10,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:distribunator, "~> 0.1.0"}
+    {:distribunator, "~> 0.1"}
   ]
 end
 ```
