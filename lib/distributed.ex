@@ -16,7 +16,7 @@ defmodule Distribunator.Distributed do
   """
   @spec pid_of(any()) :: {:ok, pid()} | {:error, any()}
   def pid_of(name) do
-    case name |> mangle_name() |> :pg2.get_members() do
+    case name |> mangle_name() |> :pg.get_members() do
       [first| _] -> {:ok, first}
       _          -> {:error, "no pid"}
     end
@@ -80,7 +80,7 @@ defmodule Distribunator.Distributed do
   """
   @spec all_pids_of(any()) :: {:ok, [pid()]} | {:error, any()}
   def all_pids_of(name) do
-    case name |> mangle_name() |> :pg2.get_members() do
+    case name |> mangle_name() |> :pg.get_members() do
       pids when is_list(pids) -> {:ok, pids}
       _                       -> {:error, "no name"}
     end
@@ -136,11 +136,11 @@ defmodule Distribunator.Distributed do
   end
 
   @doc """
-  Perform an :rpc.call/4 on the first node having name registered on it. The
-  callback is called with the target function's return value from the context
-  of the intermediate rpc pid. This allows the return value to be used before
-  the target node sees that the caling pid exited. Useful for when the target
-  node wants to monitor calling pids.
+  Perform an :rpc.call/4 on the target node. The callback is called with the
+  target function's return value from the context of the intermediate rpc pid.
+  This allows the return value to be used before the target node sees that the
+  caling pid exited. Useful for when the target node wants to monitor calling
+  pids.
 
   ## Parameters
   - target_node The node on which to execute the function
@@ -236,8 +236,7 @@ defmodule Distribunator.Distributed do
   @spec register(any(), pid()) :: :ok
   def register(name, pid) do
     mangled = mangle_name(name)
-    :pg2.create(mangled)
-    :pg2.join(mangled, pid)
+    :pg.join(mangled, pid)
     :ok
   end
 
@@ -258,7 +257,7 @@ defmodule Distribunator.Distributed do
   - `[{name, {:ok, [pid]}}, ...]`
   """
   def registry do
-    :pg2.which_groups()
+    :pg.which_groups()
     |> Enum.reject(&(unmangle_name(&1) == nil))
     |> Enum.map(&({unmangle_name(&1), all_pids_of(unmangle_name(&1))}))
   end
