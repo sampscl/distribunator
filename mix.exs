@@ -4,7 +4,7 @@ defmodule Distribunator.MixProject do
   def project do
     [
       app: :distribunator,
-      version: "1.0.0",
+      version: "1.1.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -15,6 +15,7 @@ defmodule Distribunator.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      mod: {Distribunator, []},
       extra_applications: [:logger]
     ]
   end
