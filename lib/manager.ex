@@ -38,6 +38,18 @@ defmodule Distribunator.Manager do
   """
   def connect(nodes), do: Distribunator.Distributed.call({:connect, nodes})
 
+  @doc """
+  Disconnect from one or more nodes that are currently connected and monitored
+
+  ## Parameters
+  - `nodes` A single node or list of node atoms to disconnect
+
+  ## Returns
+  - `:ok` All is well, the nodes are disconnected
+  - `{:error, reason}` Failed for reason
+  """
+  def disconnect(nodes), do: Distribunator.Distributed.call({:disconnect, nodes})
+
   defmodule State do
     @moduledoc false
     defstruct [
@@ -60,6 +72,12 @@ defmodule Distribunator.Manager do
   @impl GenServer
   def handle_call({:connect, nodes}, _from, state) do
     {updated_state, result} = do_connect(state, List.wrap(nodes))
+    {:reply, result, updated_state}
+  end
+
+  @impl GenServer
+  def handle_call({:disconnect, nodes}, _from, state) do
+    {updated_state, result} = do_disconnect(state, List.wrap(nodes))
     {:reply, result, updated_state}
   end
 
@@ -118,4 +136,23 @@ defmodule Distribunator.Manager do
       {Map.put(state, :absent_nodes, absent_nodes ++ new_nodes), :ok}
     end
   end
+
+  def do_disconnect(%State{absent_nodes: absent_nodes, present_nodes: present_nodes} = state, disconnect_nodes) do
+    if not Enum.all?(disconnect_nodes, fn(node) -> node in absent_nodes or node in present_nodes end) do
+      {state, {:error, "no node"}}
+    else
+      for node <- disconnect_nodes do
+        Node.monitor(node, false)
+        Node.disconnect(node)
+      end
+
+      updated_state =
+        state
+        |> Map.put(:absent_nodes, absent_nodes -- disconnect_nodes)
+        |> Map.put(:present_nodes, present_nodes -- disconnect_nodes)
+
+      {updated_state, :ok}
+    end
+  end
+
 end
